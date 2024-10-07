@@ -4,11 +4,11 @@ import {
 } from "@backstage/plugin-scaffolder-node";
 import { getNpmCommand } from "../../utils/getNpmCommand";
 
-export function createNpmExecAction() {
+export function createNpmRunAction() {
   return createTemplateAction<{ arguments: string[] }>({
-    id: "npm:exec",
+    id: "npm:run",
     description:
-      "Runs npm exec with the given arguments in the task workspace directory",
+      "Runs npm run with the given arguments in the task workspace directory",
     supportsDryRun: true,
     schema: {
       input: {
@@ -17,7 +17,7 @@ export function createNpmExecAction() {
         properties: {
           arguments: {
             title: "Arguments",
-            description: "The arguments to pass to the npm exec command",
+            description: "The arguments to pass to the npm run command",
             type: "array",
             items: {
               type: "string",
@@ -28,21 +28,21 @@ export function createNpmExecAction() {
     },
     async handler(ctx) {
       try {
-        console.log(`Running npm exec in ${ctx.workspacePath}`);
-        ctx.logger.info(`Running npm exec in ${ctx.workspacePath}`);
+        console.log(`Running npm run in ${ctx.workspacePath}`);
+        ctx.logger.info(`Running npm run in ${ctx.workspacePath}`);
         ctx.logger.info(`Input: ${ctx.input.arguments}`);
 
         const npm = getNpmCommand(ctx);
 
         await executeShellCommand({
           command: npm,
-          args: ["exec", ...ctx.input.arguments],
+          args: ["run", ...ctx.input.arguments],
           logStream: ctx.logStream,
           options: { cwd: ctx.workspacePath },
         });
 
-        console.log("Done running npm exec");
-        ctx.logger.info(`Done running npm exec`);
+        console.log("Done running npm run");
+        ctx.logger.info(`Done running npm run`);
       } catch (err) {
         console.error(err);
         ctx.logger.error(err);

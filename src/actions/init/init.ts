@@ -1,14 +1,14 @@
 import {
   createTemplateAction,
   executeShellCommand,
-} from '@backstage/plugin-scaffolder-backend';
-import { getNpmCommand } from '../../utils/getNpmCommand';
+} from "@backstage/plugin-scaffolder-node";
+import { getNpmCommand } from "../../utils/getNpmCommand";
 
 export function createNpmInitAction() {
   return createTemplateAction<{}>({
-    id: 'npm:init',
+    id: "npm:init",
     description:
-      'Runs npm init with defaults set in the task workspace directory',
+      "Runs npm init with defaults set in the task workspace directory",
 
     async handler(ctx) {
       try {
@@ -19,12 +19,12 @@ export function createNpmInitAction() {
 
         await executeShellCommand({
           command: npm,
-          args: ['init', '-y'],
+          args: ["init", "-y"],
           logStream: ctx.logStream,
           options: { cwd: ctx.workspacePath },
         });
 
-        console.log('Done running npm init');
+        console.log("Done running npm init");
         ctx.logger.info(`Done running npm init`);
       } catch (err) {
         console.error(err);

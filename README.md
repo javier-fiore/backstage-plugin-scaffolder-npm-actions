@@ -8,6 +8,7 @@ This contains a collection of actions for using with npm:
 - npm:install
 - npm:exec
 - npm:config
+- npm:run
 
 ## Prerequisites
 
@@ -21,6 +22,8 @@ In the root directory of your Backstage project:
 yarn add --cwd packages/backend @mdude2314/backstage-plugin-scaffolder-npm-actions
 ```
 
+### Old backend system
+
 Add the actions you'd like to the scaffolder:
 
 ```typescript
@@ -33,7 +36,7 @@ import {
   createNpmConfigAction,
 } from '@mdude2314/backstage-plugin-scaffolder-npm-actions';
 import { ScmIntegrations } from '@backstage/integration';
-import { createBuiltinActions, createRouter } from '@backstage/plugin-scaffolder-backend';
+import { createBuiltinActions, createRouter } from '@backstage/plugin-scaffolder-node';
 
 ...
 
@@ -61,6 +64,19 @@ return await createRouter({
   catalogClient,
   actions
 });
+```
+
+### New backend system
+
+```typescript
+// packages/backend/src/index.ts
+import { createBackend } from '@backstage/backend-defaults';
+
+const backend = createBackend();
+backend.add(import('@backstage/plugin-proxy-backend/alpha'));
+backend.add(import('@backstage/plugin-scaffolder-backend/alpha'));
+backend.add(import('@mdude2314/backstage-plugin-scaffolder-npm-actions/new-backend'));
+backend.start();
 ```
 
 ## Example of using each of the three actions:
@@ -104,11 +120,17 @@ spec:
       name: config
       action: npm:config
       input:
-        args: ${{ parameters.execArgs }}
+        arguments: ${{ parameters.execArgs }}
 
     - id: npm-exec
       name: exec
       action: npm:exec
       input:
-        args: ${{ parameters.execArgs }}
+        arguments: ${{ parameters.execArgs }}
+
+    - id: npm-run
+      name: run
+      action: npm:run
+      input:
+        arguments: ${{ parameters.execArgs }}        
 ```

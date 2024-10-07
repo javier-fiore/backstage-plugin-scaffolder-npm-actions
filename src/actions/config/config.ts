@@ -1,7 +1,7 @@
 import {
   createTemplateAction,
   executeShellCommand,
-} from "@backstage/plugin-scaffolder-backend";
+} from "@backstage/plugin-scaffolder-node";
 import { getNpmCommand } from "../../utils/getNpmCommand";
 
 export function createNpmConfigAction() {

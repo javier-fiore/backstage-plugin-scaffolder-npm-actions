@@ -1,5 +1,5 @@
 import { PassThrough } from "stream";
-import { createNpmInstallAction } from "./install";
+import { createNpmRunAction } from "./run";
 import { getVoidLogger } from "@backstage/backend-common";
 import { executeShellCommand } from "@backstage/plugin-scaffolder-node";
 
@@ -8,18 +8,18 @@ jest.mock("@backstage/plugin-scaffolder-backend", () => ({
   executeShellCommand: jest.fn(),
 }));
 
-describe("npm:install", () => {
+describe("npm:run", () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
 
   it("should call action", async () => {
-    const action = createNpmInstallAction();
+    const action = createNpmRunAction();
 
     const logger = getVoidLogger();
 
     await action.handler({
-      input: { packageToInstall: "test" },
+      input: { arguments: [] },
       workspacePath: "/tmp",
       logger,
       logStream: new PassThrough(),
@@ -35,19 +35,20 @@ describe("npm:install", () => {
     expect(executeShellCommand).toHaveBeenCalledWith(
       expect.objectContaining({
         command: expect.stringContaining("npm"),
-        args: expect.arrayContaining(["install"]),
+        args: expect.arrayContaining(["run"]),
       })
     );
   });
 
-  it("should call action with proper package to install", async () => {
-    const action = createNpmInstallAction();
+  it("should call action with given arguments", async () => {
+    const action = createNpmRunAction();
 
     const logger = getVoidLogger();
-    const packageToInstallString = "my-package";
+
+    const mockArgs = ["one", "two", "three"];
 
     await action.handler({
-      input: { packageToInstall: packageToInstallString },
+      input: { arguments: mockArgs },
       workspacePath: "/tmp",
       logger,
       logStream: new PassThrough(),
@@ -63,7 +64,7 @@ describe("npm:install", () => {
     expect(executeShellCommand).toHaveBeenCalledWith(
       expect.objectContaining({
         command: expect.stringContaining("npm"),
-        args: expect.arrayContaining(["install", packageToInstallString]),
+        args: expect.arrayContaining(["run", ...mockArgs]),
       })
     );
   });
